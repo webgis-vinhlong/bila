@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "app.js",
+  "sources": [
+    "/workspace/scratch/e59a4a135577/work/bila/examples/web/app.bila"
+  ],
+  "sourcesContent": [
+    "---bila:strict---\n\nbilb root = document.querySelector(\"#app\");\nbilb count: Sob = 0;\n\nhaml_sob render() {\n  root.innerHTML = `<h1>BilaScript Web</h1><p>Count: ${count}</p><button id=\"inc\">+1</button>`;\n  document.querySelector(\"#inc\").addEventListener(\"click\", () => {\n    count++;\n    render();\n  });\n}\n\nrender();\n"
+  ],
+  "names": [],
+  "mappings": "AAEA;AACA;AAEA;AACA;AACA;;;;;AAMA;"
+}

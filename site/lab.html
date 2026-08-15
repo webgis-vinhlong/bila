@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BilaScript LAB-40 · Offline MS-DOS Practice</title>
+<style>
+:root{
+  --bg:#f7f7f5;
+  --panel:#ffffff;
+  --fg:#171717;
+  --muted:#737373;
+  --line:#dedede;
+  --line-strong:#b8b8b8;
+  --blue:#0b3558;
+  --blue-soft:#eef4f8;
+  --code:#f3f4f4;
+  --danger:#8b1e1e;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--fg)}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:Arial,Helvetica,"Segoe UI",sans-serif;
+  font-size:14px;
+  line-height:1.55;
+}
+button,textarea,input,select{font:inherit}
+.shell{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:24px 0 40px}
+.box,.hero-main,.hero-side{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:4px;
+  box-shadow:none;
+}
+.hero{display:grid;grid-template-columns:1.45fr .55fr;gap:12px;margin-bottom:12px}
+.hero-main{padding:22px}.hero-side{padding:18px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.logo{
+  background:var(--blue);color:#fff;padding:5px 8px;border-radius:3px;
+  font:500 12px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.02em
+}
+.sys{font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{
+  font-size:clamp(28px,4vw,48px);line-height:1.05;letter-spacing:-.035em;
+  margin:0 0 12px;font-weight:500
+}
+.subtitle{font-size:14px;color:#3f3f3f;max-width:850px;margin:0}
+.blue{color:var(--blue);background:none;padding:0}
+.pipeline{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.pill{
+  border:1px solid var(--line);padding:4px 7px;border-radius:3px;
+  font:500 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+  color:#4f4f4f;background:#fafafa;text-transform:uppercase
+}
+.pill.hot{background:var(--blue);color:#fff;border-color:var(--blue)}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metric{border:1px solid var(--line);padding:12px;border-radius:3px}
+.metric b{display:block;font-size:22px;font-weight:500;color:var(--blue)}
+.metric span{font-size:10px;color:var(--muted);text-transform:uppercase}
+.status{
+  border:1px solid var(--line);padding:9px 10px;margin-top:10px;border-radius:3px;
+  font:500 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:#fff
+}
+.status.ok{border-left:3px solid var(--blue);color:var(--blue)}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:12px}
+.sidebar{padding:14px;min-height:700px}
+.sidebar h2,.panel h2{
+  font-size:11px;font-weight:500;color:var(--muted);margin:0 0 10px;
+  text-transform:uppercase;letter-spacing:.05em
+}
+.search{
+  width:100%;border:1px solid var(--line);border-radius:3px;padding:9px;background:#fff;color:var(--fg);
+  outline:none;margin-bottom:10px
+}
+.search:focus{border-color:var(--blue)}
+.group-title{font-size:10px;font-weight:500;color:#8a8a8a;margin:14px 0 6px;text-transform:uppercase}
+.exercise-list{display:grid;gap:3px}
+.ex-btn{
+  width:100%;border:0;background:transparent;color:var(--fg);text-align:left;padding:7px 8px;cursor:pointer;
+  display:grid;grid-template-columns:28px 1fr;gap:7px;align-items:start;font-weight:400;font-size:12px;border-radius:3px
+}
+.ex-btn:hover{background:#f1f1ef}
+.ex-btn.active{background:var(--blue);color:#fff}
+.ex-btn small{font-weight:400;display:block;opacity:.72;margin-top:1px;font-size:10px}
+.main{display:grid;gap:12px}
+.panel{padding:16px}
+.topline{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.kicker{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.title{font-size:22px;font-weight:500;margin:3px 0}
+.task{font-size:14px;margin:6px 0 0;color:#444}
+.focus{
+  display:inline-block;background:var(--blue-soft);color:var(--blue);padding:4px 7px;border-radius:3px;
+  margin-top:10px;font:500 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace
+}
+.workspace{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.editor-wrap,.output-wrap{background:#fff}
+.label{
+  display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;font-weight:500;
+  color:var(--muted);text-transform:uppercase;margin-bottom:7px
+}
+textarea{
+  width:100%;min-height:380px;border:1px solid var(--line);border-radius:3px;background:var(--code);color:#111;padding:12px;
+  resize:vertical;outline:none;font:400 13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;tab-size:4
+}
+textarea:focus{border-color:var(--blue);background:#fff}
+.output{
+  min-height:150px;border:1px solid var(--line);border-radius:3px;background:var(--code);padding:11px;
+  white-space:pre-wrap;word-break:break-word;font:400 13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace
+}
+.output.actual{min-height:150px}
+.expected{border-left:3px solid var(--blue)}
+.note{border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:#555;margin-top:12px}
+.note strong{color:var(--blue);background:none;padding:0;font-weight:500}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+button,.btn{
+  border:1px solid var(--line-strong);background:#fff;color:#222;border-radius:3px;padding:7px 9px;
+  font-weight:400;font-size:11px;cursor:pointer;text-transform:none;text-decoration:none
+}
+button:hover,.btn:hover{border-color:#777;background:#f5f5f3}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button.primary:hover{background:#082944}
+button:disabled{opacity:.4;cursor:not-allowed}
+.navrow{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.pass,.fail{
+  padding:5px 8px;border-radius:3px;font:500 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace
+}
+.pass{background:var(--blue);color:#fff}
+.fail{border:1px solid var(--line);color:#666;background:#fff}
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.legend>div{border:1px solid var(--line);border-radius:3px;padding:8px;font-size:11px;color:#555}
+.legend b{display:block;font:500 11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--blue)}
+kbd{border:1px solid var(--line);padding:1px 4px;background:#fff;border-radius:2px}
+.footer{margin-top:12px;padding:12px 14px;font-size:11px;color:var(--muted)}
+.footer b{font-weight:500;color:#444}
+.toast{
+  position:fixed;right:14px;bottom:14px;background:#111;color:#fff;border-radius:3px;padding:8px 10px;
+  opacity:0;transform:translateY(6px);pointer-events:none;transition:.15s;font-size:11px
+}
+.toast.show{opacity:1;transform:none}
+@media(max-width:980px){.hero,.layout,.workspace{grid-template-columns:1fr}.sidebar{min-height:0}.legend{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.shell{width:calc(100% - 16px);padding-top:12px}.metrics,.legend{grid-template-columns:1fr}.hero-main,.hero-side,.panel,.sidebar{padding:12px}textarea{min-height:300px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <section class="hero">
+    <div class="hero-main">
+      <div class="brand">
+        <div class="logo">BILA&gt;_</div>
+        <div><div class="sys">OFFLINE / ZERO CDN / LAB-40</div></div>
+      </div>
+      <h1>BILASCRIPT<br><span class="blue">40 BÀI THỰC HÀNH CƠ BẢN</span></h1>
+      <p class="subtitle">Một file HTML duy nhất để thực hành BilaScript v4 theo mô hình frontend → JavaScript backend. Chọn bài, sửa code, chạy offline, so sánh kết quả và copy TXT.</p>
+      <div class="pipeline">
+        <span class="pill hot">*.bila</span><span class="pill">keyword</span><span class="pill">alias</span>
+        <span class="pill">mini transpile</span><span class="pill">worker</span><span class="pill hot">result</span>
+      </div>
+    </div>
+    <aside class="hero-side">
+      <div class="metrics">
+        <div class="metric"><b>40</b><span>Bài tập</span></div>
+        <div class="metric"><b>5</b><span>Nhóm kiến thức</span></div>
+        <div class="metric"><b>0</b><span>CDN / network</span></div>
+        <div class="metric"><b id="doneCount">0</b><span>Bài đã đạt</span></div>
+      </div>
+      <div id="sysStatus" class="status ok">[READY] MINI-RUNNER OFFLINE ĐÃ NẠP.</div>
+    </aside>
+  </section>
+
+  <section class="layout">
+    <aside class="sidebar box">
+      <h2>Bài thực hành</h2>
+      <input id="search" class="search" placeholder="TÌM BÀI / KEYWORD..." autocomplete="off">
+      <div id="exerciseNav"></div>
+    </aside>
+
+    <section class="main">
+      <article class="panel box">
+        <div class="topline">
+          <div>
+            <div id="group" class="kicker"></div>
+            <div id="title" class="title"></div>
+            <div id="task" class="task"></div>
+            <div id="focus" class="focus"></div>
+          </div>
+          <div id="resultBadge" class="fail">CHƯA CHẠY</div>
+        </div>
+      </article>
+
+      <article class="panel box">
+        <h2>WORKSPACE</h2>
+        <div class="workspace">
+          <div class="editor-wrap">
+            <div class="label"><span>current.bila</span><span id="lineInfo">0 LINES</span></div>
+            <textarea id="code" spellcheck="false"></textarea>
+            <div class="actions">
+              <button id="runBtn" class="primary">F5 · CHẠY</button>
+              <button id="resetBtn">RESET</button>
+              <button id="copyCodeBtn">COPY CODE</button>
+            </div>
+          </div>
+          <div class="output-wrap">
+            <div class="label"><span>Kết quả thực tế</span><span id="runtimeInfo">IDLE</span></div>
+            <div id="actual" class="output actual">C:\&gt; _</div>
+
+            <div class="label" style="margin-top:10px"><span>Kết quả kỳ vọng</span><span>REFERENCE</span></div>
+            <div id="expected" class="output expected"></div>
+
+            <div id="note" class="note"></div>
+            <div class="actions">
+              <button id="copyResultBtn">COPY KẾT QUẢ</button>
+              <button id="copyTxtBtn">COPY BÀI TXT</button>
+              <button id="downloadTxtBtn">DOWNLOAD .TXT</button>
+            </div>
+          </div>
+        </div>
+        <div class="navrow">
+          <button id="prevBtn">&lt; BÀI TRƯỚC</button>
+          <button id="nextBtn">BÀI TIẾP &gt;</button>
+        </div>
+      </article>
+
+      <article class="panel box">
+        <h2>Core mapping</h2>
+        <div class="legend">
+          <div><b>haml_sob</b>function</div>
+          <div><b>bilb</b>var</div>
+          <div><b>neub / kac</b>if / else</div>
+          <div><b>vil / trogp_ki</b>for / while</div>
+          <div><b>trov_ved</b>return</div>
+          <div><b>dayq / layb_cujb</b>push / pop</div>
+          <div><b>ahj_xar / locr</b>map / filter</div>
+          <div><b>dof_zail</b>length</div>
+          <div><b>takj / chujg_con</b>split / substring</div>
+          <div><b>mony_Tolj</b>Math</div>
+          <div><b>lopx / moix</b>class / new</div>
+          <div><b>thuv / chupr_layb</b>try / catch</div>
+          <div><b>ax + b = 0</b>x = -b/a</div>
+          <div><b>Δ = b² - 4ac</b>bậc 2</div>
+          <div><b>y = x²</b>bậc 4 trùng phương</div>
+        </div>
+      </article>
+    </section>
+  </section>
+
+  <footer class="footer box">
+    <b>BilaScript LAB-40 OFFLINE</b> · Nội dung bài tập bám vocabulary/grammar v4. Mini-runner trong file này là môi trường giáo dục cho tập con 40 bài, không thay thế compiler BilaScript v4 đầy đủ. Không dùng CDN, không gửi code ra Internet.
+  </footer>
+</main>
+<div id="toast" class="toast">COPIED</div>
+
+<script>
+const EXERCISES = [{"id": 1, "group": "01 · NỀN TẢNG", "title": "Hello BilaScript", "focus": "console.log · chương trình tối thiểu", "task": "In ra dòng chữ BilaScript v4.0.0.", "code": "---bila:strict---\nconsole.log(\"BilaScript v4.0.0\");", "expected": "BilaScript v4.0.0", "note": "BilaScript v4 dùng JavaScript làm backend thực thi; console.log vẫn là API JavaScript/host."}, {"id": 2, "group": "01 · NỀN TẢNG", "title": "Biến số và phép cộng", "focus": "bilb · Sob · +", "task": "Khai báo hai số có annotation frontend và in tổng.", "code": "---bila:strict---\nbilb a: Sob = 12;\nbilb b: Sob = 8;\nconsole.log(a + b);", "expected": "20", "note": "Annotation Sob là bằng chứng frontend; khi sinh JavaScript nó được xóa, không tạo runtime helper."}, {"id": 3, "group": "01 · NỀN TẢNG", "title": "Toán tử cơ bản", "focus": "+ · - · * · / · %", "task": "Tính đồng thời tích, thương và phần dư.", "code": "---bila:strict---\nbilb a = 17;\nbilb b = 5;\nconsole.log(a * b);\nconsole.log(a / b);\nconsole.log(a % b);", "expected": "85\n3.4\n2", "note": "Toán tử biểu thức giữ hành vi JavaScript chuẩn sau khi BilaScript hạ mã."}, {"id": 4, "group": "01 · NỀN TẢNG", "title": "Hàm cộng hai số", "focus": "haml_sob · trov_ved", "task": "Viết hàm tong(a,b) và trả về tổng.", "code": "---bila:strict---\nhaml_sob tong(a: Sob, b: Sob): Sob {\n    trov_ved a + b;\n}\nconsole.log(tong(7, 9));", "expected": "16", "note": "haml_sob → function; trov_ved → return."}, {"id": 5, "group": "01 · NỀN TẢNG", "title": "Rẽ nhánh if / else", "focus": "neub · kac", "task": "Kiểm tra một số là dương hay không.", "code": "---bila:strict---\nbilb x = 5;\nneub (x > 0) {\n    console.log(\"DUONG\");\n} kac {\n    console.log(\"KHONG DUONG\");\n}", "expected": "DUONG", "note": "neub → if; kac → else."}, {"id": 6, "group": "01 · NỀN TẢNG", "title": "Boolean chuẩn", "focus": "thatf · sai · Lalf_lij", "task": "Thực hành hai hằng logic canonical của BilaScript.", "code": "---bila:strict---\nbilb dung: Lalf_lij = thatf;\nbilb khong_dung: Lalf_lij = sai;\nconsole.log(dung);\nconsole.log(khong_dung);", "expected": "true\nfalse", "note": "thatf → true; sai → false."}, {"id": 7, "group": "01 · NỀN TẢNG", "title": "Vòng lặp for", "focus": "vil · bilb", "task": "Tính tổng các số từ 1 đến 5.", "code": "---bila:strict---\nbilb tong = 0;\nvil (bilb i = 1; i <= 5; i++) {\n    tong += i;\n}\nconsole.log(tong);", "expected": "15", "note": "vil → for."}, {"id": 8, "group": "01 · NỀN TẢNG", "title": "Vòng lặp while", "focus": "trogp_ki", "task": "Đếm ngược từ 3 về 1.", "code": "---bila:strict---\nbilb n = 3;\ntrogp_ki (n > 0) {\n    console.log(n);\n    n--;\n}", "expected": "3\n2\n1", "note": "trogp_ki → while."}, {"id": 9, "group": "01 · NỀN TẢNG", "title": "Vòng lặp do / while", "focus": "laml · trogp_ki", "task": "Chạy thân vòng lặp ít nhất một lần.", "code": "---bila:strict---\nbilb n = 1;\nlaml {\n    console.log(n);\n    n++;\n} trogp_ki (n <= 3);", "expected": "1\n2\n3", "note": "laml → do; trogp_ki → while."}, {"id": 10, "group": "01 · NỀN TẢNG", "title": "break và continue", "focus": "zugk · tifb_tucr", "task": "Bỏ qua số 2 và dừng khi gặp số 5.", "code": "---bila:strict---\nvil (bilb i = 1; i <= 7; i++) {\n    neub (i === 2) { tifb_tucr; }\n    neub (i === 5) { zugk; }\n    console.log(i);\n}", "expected": "1\n3\n4", "note": "zugk → break; tifb_tucr → continue."}, {"id": 11, "group": "02 · MẢNG", "title": "Độ dài mảng", "focus": "Magz<Sob> · dof_zail", "task": "Tạo mảng số và đọc số phần tử.", "code": "---bila:strict---\nbilb ds: Magz<Sob> = [10, 20, 30];\nconsole.log(ds.dof_zail);", "expected": "3", "note": "dof_zail → length khi receiver được chứng minh là Array/String."}, {"id": 12, "group": "02 · MẢNG", "title": "Thêm phần tử", "focus": "dayq", "task": "Thêm 40 vào cuối mảng.", "code": "---bila:strict---\nbilb ds: Magz<Sob> = [10, 20, 30];\nds.dayq(40);\nconsole.log(ds);\nconsole.log(ds.dof_zail);", "expected": "10,20,30,40\n4", "note": "dayq → push. Đây là ví dụ alias receiver-safe được repo dùng để kiểm thử strict mode."}, {"id": 13, "group": "02 · MẢNG", "title": "Lấy phần tử cuối", "focus": "layb_cujb", "task": "Pop phần tử cuối và kiểm tra mảng còn lại.", "code": "---bila:strict---\nbilb ds: Magz<Sob> = [4, 5, 6];\nbilb cuoi = ds.layb_cujb();\nconsole.log(cuoi);\nconsole.log(ds);", "expected": "6\n4,5", "note": "layb_cujb → pop."}, {"id": 14, "group": "02 · MẢNG", "title": "Sắp xếp số tăng dần", "focus": "sapx_xepb · arrow", "task": "Sắp xếp mảng số bằng comparator.", "code": "---bila:strict---\nbilb ds = [9, 2, 10, 1];\nds.sapx_xepb((a, b) => a - b);\nconsole.log(ds);", "expected": "1,2,9,10", "note": "sapx_xepb → sort; arrow function giữ cú pháp cấu trúc JavaScript."}, {"id": 15, "group": "02 · MẢNG", "title": "Đảo ngược mảng", "focus": "daoz_wush", "task": "Đảo thứ tự các phần tử.", "code": "---bila:strict---\nbilb ds = [1, 2, 3, 4];\nds.daoz_wush();\nconsole.log(ds);", "expected": "4,3,2,1", "note": "daoz_wush → reverse."}, {"id": 16, "group": "02 · MẢNG", "title": "Biến đổi với map", "focus": "ahj_xar", "task": "Nhân đôi từng phần tử.", "code": "---bila:strict---\nbilb ds = [1, 2, 3];\nbilb gap_doi = ds.ahj_xar((x) => x * 2);\nconsole.log(gap_doi);", "expected": "2,4,6", "note": "ahj_xar → map."}, {"id": 17, "group": "02 · MẢNG", "title": "Lọc số chẵn", "focus": "locr", "task": "Giữ lại các số chia hết cho 2.", "code": "---bila:strict---\nbilb ds = [1, 2, 3, 4, 5, 6];\nbilb chan = ds.locr((x) => x % 2 === 0);\nconsole.log(chan);", "expected": "2,4,6", "note": "locr → filter."}, {"id": 18, "group": "02 · MẢNG", "title": "Duyệt forEach", "focus": "cho_moig", "task": "Cộng dồn các phần tử bằng forEach.", "code": "---bila:strict---\nbilb ds = [2, 4, 6];\nbilb tong = 0;\nds.cho_moig((x) => { tong += x; });\nconsole.log(tong);", "expected": "12", "note": "cho_moig → forEach."}, {"id": 19, "group": "02 · MẢNG", "title": "Kiểm tra some", "focus": "motf_vail", "task": "Kiểm tra xem mảng có phần tử lớn hơn 10 hay không.", "code": "---bila:strict---\nbilb ds = [3, 7, 12, 4];\nconsole.log(ds.motf_vail((x) => x > 10));", "expected": "true", "note": "motf_vail → some."}, {"id": 20, "group": "02 · MẢNG", "title": "Kết hợp push + map + filter", "focus": "dayq · ahj_xar · locr", "task": "Thêm dữ liệu, nhân đôi rồi chỉ giữ kết quả lớn hơn 5.", "code": "---bila:strict---\nbilb ds = [1, 2, 3];\nds.dayq(4);\nbilb kq = ds.ahj_xar((x) => x * 2).locr((x) => x > 5);\nconsole.log(kq);", "expected": "6,8", "note": "Bài tổng hợp alias mảng có receiver rõ ràng."}, {"id": 21, "group": "03 · CHUỖI & MATH", "title": "Độ dài chuỗi", "focus": "Chujg · dof_zail", "task": "Đếm số ký tự của chuỗi ASCII đơn giản.", "code": "---bila:strict---\nbilb s: Chujg = \"BilaScript\";\nconsole.log(s.dof_zail);", "expected": "10", "note": "dof_zail cũng áp dụng cho String."}, {"id": 22, "group": "03 · CHUỖI & MATH", "title": "Tách chuỗi", "focus": "takj", "task": "Tách chuỗi CSV thành mảng.", "code": "---bila:strict---\nbilb s = \"Bila,Script,CVNSS\";\nbilb p = s.takj(\",\");\nconsole.log(p);\nconsole.log(p.dof_zail);", "expected": "Bila,Script,CVNSS\n3", "note": "takj → split."}, {"id": 23, "group": "03 · CHUỖI & MATH", "title": "Lấy chuỗi con", "focus": "chujg_con", "task": "Lấy phần 'Script' từ 'BilaScript'.", "code": "---bila:strict---\nbilb s = \"BilaScript\";\nconsole.log(s.chujg_con(4));", "expected": "Script", "note": "chujg_con → substring."}, {"id": 24, "group": "03 · CHUỖI & MATH", "title": "Thay thế chuỗi", "focus": "thay_theb", "task": "Đổi 'JS' thành 'BilaScript'.", "code": "---bila:strict---\nbilb s = \"Hoc JS\";\nconsole.log(s.thay_theb(\"JS\", \"BilaScript\"));", "expected": "Hoc BilaScript", "note": "thay_theb → replace."}, {"id": 25, "group": "03 · CHUỖI & MATH", "title": "Math canonical aliases", "focus": "mony_Tolj · sqrt · pow · abs · round", "task": "Thực hành bốn alias toán học của BilaScript.", "code": "---bila:strict---\nconsole.log(mony_Tolj.cano_bacf_hai(81));\nconsole.log(mony_Tolj.lys_thuak(2, 5));\nconsole.log(mony_Tolj.jaj_trir_tydf_doib(-7));\nconsole.log(mony_Tolj.laml_tronl(3.6));", "expected": "9\n32\n7\n4", "note": "mony_Tolj → Math; cano_bacf_hai → sqrt; lys_thuak → pow; jaj_trir_tydf_doib → abs; laml_tronl → round."}, {"id": 26, "group": "04 · CÚ PHÁP HIỆN ĐẠI", "title": "Optional chaining + nullish", "focus": "?. · ?? · voy_jaj_trir", "task": "Đọc length an toàn khi giá trị có thể null.", "code": "---bila:strict---\nbilb ds = voy_jaj_trir;\nbilb n = ds?.dof_zail ?? 0;\nconsole.log(n);", "expected": "0", "note": "Repo v4 kiểm thử optional chaining và nullish như cú pháp cấu trúc hiện đại."}, {"id": 27, "group": "04 · CÚ PHÁP HIỆN ĐẠI", "title": "Destructuring + spread", "focus": "{a,b} · [x,y] · ...", "task": "Tách dữ liệu và ghép mảng mới.", "code": "---bila:strict---\nbilb {a, b} = {a: 1, b: 2};\nbilb [x, y] = [3, 4];\nbilb ds = [a, b, ...[x, y]];\nconsole.log(a + b + x + y);\nconsole.log(ds);", "expected": "10\n1,2,3,4", "note": "Destructuring và spread được giữ cấu trúc khi sinh JavaScript."}, {"id": 28, "group": "04 · CÚ PHÁP HIỆN ĐẠI", "title": "Arrow function", "focus": "=>", "task": "Tạo hàm bình phương dạng arrow.", "code": "---bila:strict---\nbilb binh_phuong = (x) => x * x;\nconsole.log(binh_phuong(6));", "expected": "36", "note": "Arrow là structural syntax trong BilaScript v4."}, {"id": 29, "group": "04 · CÚ PHÁP HIỆN ĐẠI", "title": "Class và new", "focus": "lopx · moix · this", "task": "Tạo lớp MayTinh với phương thức cong.", "code": "---bila:strict---\nlopx MayTinh {\n    cong(a: Sob, b: Sob): Sob {\n        trov_ved a + b;\n    }\n}\nbilb m = moix MayTinh();\nconsole.log(m.cong(20, 22));", "expected": "42", "note": "lopx → class; moix → new. Repo v4 có test class tương tự."}, {"id": 30, "group": "04 · CÚ PHÁP HIỆN ĐẠI", "title": "Ngoại lệ try / catch / finally", "focus": "thuv · nemj · chupr_layb · cujb_cugl", "task": "Ném lỗi, bắt lỗi và luôn chạy finally.", "code": "---bila:strict---\nthuv {\n    nemj moix Error(\"LOI_MAU\");\n} chupr_layb (e) {\n    console.log(e.message);\n} cujb_cugl {\n    console.log(\"FINALLY\");\n}", "expected": "LOI_MAU\nFINALLY", "note": "thuv → try; nemj → throw; chupr_layb → catch; cujb_cugl → finally."}, {"id": 31, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 1: ax + b = 0", "focus": "hàm · điều kiện · phép chia", "task": "Giải phương trình 2x - 8 = 0 bằng công thức x = -b/a.", "code": "---bila:strict---\nhaml_sob giai_bac_1(a: Sob, b: Sob): Sob {\n    trov_ved -b / a;\n}\nbilb x = giai_bac_1(2, -8);\nconsole.log(x);", "expected": "4", "note": "Mẫu cơ bản của phương trình bậc 1 khi a khác 0: x = -b/a."}, {"id": 32, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 1: trường hợp đặc biệt", "focus": "neub · kac · phân loại nghiệm", "task": "Phân loại phương trình 0x + 0 = 0.", "code": "---bila:strict---\nbilb a = 0;\nbilb b = 0;\n\nneub (a === 0) {\n    neub (b === 0) {\n        console.log(\"VO SO NGHIEM\");\n    } kac {\n        console.log(\"VO NGHIEM\");\n    }\n} kac {\n    console.log(-b / a);\n}", "expected": "VO SO NGHIEM", "note": "Nếu a = 0, cần xét b: b = 0 thì vô số nghiệm; b khác 0 thì vô nghiệm."}, {"id": 33, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 2: hai nghiệm phân biệt", "focus": "delta · cano_bacf_hai · công thức nghiệm", "task": "Giải x² - 5x + 6 = 0.", "code": "---bila:strict---\nbilb a = 1;\nbilb b = -5;\nbilb c = 6;\nbilb delta = b * b - 4 * a * c;\n\nneub (delta > 0) {\n    bilb x1 = (-b + mony_Tolj.cano_bacf_hai(delta)) / (2 * a);\n    bilb x2 = (-b - mony_Tolj.cano_bacf_hai(delta)) / (2 * a);\n    console.log(x1);\n    console.log(x2);\n}", "expected": "3\n2", "note": "Δ = b² - 4ac. Khi Δ > 0, phương trình có hai nghiệm thực phân biệt."}, {"id": 34, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 2: nghiệm kép", "focus": "delta === 0", "task": "Giải x² - 4x + 4 = 0.", "code": "---bila:strict---\nbilb a = 1;\nbilb b = -4;\nbilb c = 4;\nbilb delta = b * b - 4 * a * c;\n\nneub (delta === 0) {\n    bilb x = -b / (2 * a);\n    console.log(x);\n}", "expected": "2", "note": "Khi Δ = 0, nghiệm kép là x = -b/(2a)."}, {"id": 35, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 2: không có nghiệm thực", "focus": "delta < 0", "task": "Xét nghiệm thực của x² + 1 = 0.", "code": "---bila:strict---\nbilb a = 1;\nbilb b = 0;\nbilb c = 1;\nbilb delta = b * b - 4 * a * c;\n\nneub (delta < 0) {\n    console.log(\"VO NGHIEM THUC\");\n}", "expected": "VO NGHIEM THUC", "note": "Trong phạm vi số thực, Δ < 0 nghĩa là phương trình bậc 2 không có nghiệm thực."}, {"id": 36, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 3: một nghiệm nguyên", "focus": "vil · kiểm tra f(x) === 0", "task": "Tìm nghiệm nguyên của x³ - 8 = 0 trong đoạn [-10, 10].", "code": "---bila:strict---\nhaml_sob f(x: Sob): Sob {\n    trov_ved x * x * x - 8;\n}\n\nvil (bilb x = -10; x <= 10; x++) {\n    neub (f(x) === 0) {\n        console.log(x);\n    }\n}", "expected": "2", "note": "Đây là bài tìm nghiệm nguyên bằng quét hữu hạn, phù hợp để luyện hàm + vòng lặp trước khi học công thức bậc 3 tổng quát."}, {"id": 37, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 3: ba nghiệm nguyên", "focus": "hàm đa thức · vòng lặp", "task": "Tìm các nghiệm nguyên của x³ - 6x² + 11x - 6 = 0 trong [-10, 10].", "code": "---bila:strict---\nhaml_sob f(x: Sob): Sob {\n    trov_ved x * x * x - 6 * x * x + 11 * x - 6;\n}\n\nvil (bilb x = -10; x <= 10; x++) {\n    neub (f(x) === 0) {\n        console.log(x);\n    }\n}", "expected": "1\n2\n3", "note": "Đa thức này phân tích được thành (x-1)(x-2)(x-3), nên có ba nghiệm nguyên 1, 2, 3."}, {"id": 38, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 3: nghiệm âm, 0 và dương", "focus": "đa thức x³ - 4x", "task": "Tìm nghiệm nguyên của x³ - 4x = 0 trong [-10, 10].", "code": "---bila:strict---\nhaml_sob f(x: Sob): Sob {\n    trov_ved x * x * x - 4 * x;\n}\n\nvil (bilb x = -10; x <= 10; x++) {\n    neub (f(x) === 0) {\n        console.log(x);\n    }\n}", "expected": "-2\n0\n2", "note": "x³ - 4x = x(x-2)(x+2), minh họa phương trình bậc 3 có thể có ba nghiệm thực."}, {"id": 39, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 4 trùng phương", "focus": "đặt y = x² · quy về bậc 2", "task": "Giải x⁴ - 5x² + 4 = 0 bằng cách đặt y = x².", "code": "---bila:strict---\nbilb a = 1;\nbilb b = -5;\nbilb c = 4;\nbilb delta = b * b - 4 * a * c;\n\nbilb y1 = (-b + mony_Tolj.cano_bacf_hai(delta)) / (2 * a);\nbilb y2 = (-b - mony_Tolj.cano_bacf_hai(delta)) / (2 * a);\n\nbilb r1 = mony_Tolj.cano_bacf_hai(y1);\nbilb r2 = mony_Tolj.cano_bacf_hai(y2);\n\nbilb nghiem = [-r1, -r2, r2, r1];\nconsole.log(nghiem);", "expected": "-2,-1,1,2", "note": "Đặt y = x² thu được y² - 5y + 4 = 0, rồi lấy căn các nghiệm y không âm."}, {"id": 40, "group": "05 · PHƯƠNG TRÌNH", "title": "Bậc 4: tìm bốn nghiệm nguyên", "focus": "f(x) bậc 4 · quét nghiệm", "task": "Tìm các nghiệm nguyên của x⁴ - 10x² + 9 = 0 trong [-10, 10].", "code": "---bila:strict---\nhaml_sob f(x: Sob): Sob {\n    trov_ved x * x * x * x - 10 * x * x + 9;\n}\n\nvil (bilb x = -10; x <= 10; x++) {\n    neub (f(x) === 0) {\n        console.log(x);\n    }\n}", "expected": "-3\n-1\n1\n3", "note": "Đa thức bậc 4 này có thể viết thành (x²-1)(x²-9), nên các nghiệm là -3, -1, 1, 3."}];
+
+const KEYWORDS = {
+  haml_sob:"function", bilb:"var", neub:"if", kac:"else", vil:"for", trogp_ki:"while",
+  trov_ved:"return", moix:"new", voy_jaj_trir:"null", thatf:"true", sai:"false",
+  thuv:"try", chupr_layb:"catch", nemj:"throw", cujb_cugl:"finally",
+  laml:"do", zugk:"break", tifb_tucr:"continue", lopx:"class"
+};
+const GLOBALS = {
+  Magz:"Array", Suh_vatf:"Object", Haml_sob:"Function", Wayl:"Date",
+  mony_Tolj:"Math", Chujg:"String", Sob:"Number", Lalf_lij:"Boolean"
+};
+const MEMBERS = {
+  dof_zail:"length", dayq:"push", layb_cujb:"pop", sapx_xepb:"sort", daoz_wush:"reverse",
+  ahj_xar:"map", locr:"filter", cho_moig:"forEach", motf_vail:"some",
+  takj:"split", chujg_con:"substring", kopx:"match", timl_civb:"search", thay_theb:"replace",
+  denb_chujg:"toString", goir:"call", ap_zugr:"apply",
+  waug_nhily:"random", laml_tronl:"round", cano_bacf_hai:"sqrt",
+  jaj_trir_tydf_doib:"abs", trand:"ceil", sanl:"floor", lys_thuak:"pow"
+};
+
+function transformCodeChunk(s){
+  // Frontend-only type annotations used by the lessons.
+  s = s.replace(/:\s*Magz\s*<\s*(?:Sob|Chujg|Lalf_lij|Suh_vatf)\s*>/g, "");
+  s = s.replace(/:\s*(?:Sob|Chujg|Lalf_lij|Suh_vatf|Haml_sob|Wayl)\b/g, "");
+
+  for(const [k,v] of Object.entries(KEYWORDS)){
+    s = s.replace(new RegExp("\\b"+k+"\\b","g"), v);
+  }
+  for(const [k,v] of Object.entries(GLOBALS)){
+    s = s.replace(new RegExp("\\b"+k+"\\b","g"), v);
+  }
+  for(const [k,v] of Object.entries(MEMBERS)){
+    s = s.replace(new RegExp("\\."+k+"\\b","g"), "."+v);
+  }
+  return s;
+}
+
+function transpileBila(source){
+  source = String(source)
+    .replace(/^\s*---bila:strict---\s*$/gm,"")
+    .replace(/^\s*---bila---\s*$/gm,"");
+
+  let out="", buf="", state="code", quote="", i=0;
+  const flush=()=>{ if(buf){ out += transformCodeChunk(buf); buf=""; } };
+
+  while(i<source.length){
+    const c=source[i], n=source[i+1];
+
+    if(state==="code"){
+      if(c==="'" || c==='"' || c==="`"){
+        flush(); state="string"; quote=c; out+=c; i++; continue;
+      }
+      if(c==="/" && n==="/"){
+        flush(); state="line"; out+="//"; i+=2; continue;
+      }
+      if(c==="/" && n==="*"){
+        flush(); state="block"; out+="/*"; i+=2; continue;
+      }
+      buf+=c; i++; continue;
+    }
+
+    if(state==="string"){
+      out+=c;
+      if(c==="\\\\" && i+1<source.length){ out+=source[i+1]; i+=2; continue; }
+      if(c===quote){ state="code"; quote=""; }
+      i++; continue;
+    }
+
+    if(state==="line"){
+      out+=c; i++;
+      if(c==="\\n") state="code";
+      continue;
+    }
+
+    if(state==="block"){
+      if(c==="*" && n==="/"){ out+="*/"; i+=2; state="code"; continue; }
+      out+=c; i++; continue;
+    }
+  }
+  flush();
+  return out.trim();
+}
+
+const workerSource = `
+self.onmessage = (e) => {
+  const code = e.data.code;
+  const logs = [];
+  const fmt = (v) => {
+    if (typeof v === "string") return v;
+    if (v === undefined) return "undefined";
+    if (v === null) return "null";
+    try { return String(v); } catch { return "[unprintable]"; }
+  };
+  const fakeConsole = { log: (...args) => logs.push(args.map(fmt).join(" ")) };
+  try {
+    const fn = new Function("console", code);
+    fn(fakeConsole);
+    self.postMessage({ok:true, output:logs.join("\\n")});
+  } catch (err) {
+    self.postMessage({ok:false, output:(err && err.name ? err.name+": " : "") + (err && err.message ? err.message : String(err))});
+  }
+};`;
+
+const $ = (id)=>document.getElementById(id);
+const state = { index:0, done:new Set(JSON.parse(localStorage.getItem("bilaLab40Done")||"[]")) };
+
+function toast(text="COPIED"){
+  const t=$("toast"); t.textContent=text; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1100);
+}
+function copyText(text){
+  const fallback=()=>{
+    const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); ta.remove(); toast("ĐÃ COPY");
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>toast("ĐÃ COPY")).catch(fallback);
+  } else fallback();
+}
+function makeTxt(ex, code, actual){
+  return [
+    "BILASCRIPT LAB-40",
+    "BAI "+String(ex.id).padStart(2,"0")+" - "+ex.title,
+    "NHOM: "+ex.group,
+    "TRONG TAM: "+ex.focus,
+    "",
+    "DE BAI:",
+    ex.task,
+    "",
+    "CODE BILASCRIPT:",
+    code,
+    "",
+    "KET QUA KY VONG:",
+    ex.expected,
+    "",
+    "KET QUA THUC TE:",
+    actual || "(chua chay)",
+    "",
+    "GHI CHU:",
+    ex.note
+  ].join("\\n");
+}
+function downloadText(name, text){
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+function updateDone(){
+  $("doneCount").textContent=state.done.size;
+  localStorage.setItem("bilaLab40Done",JSON.stringify([...state.done]));
+}
+function renderNav(filter=""){
+  const q=filter.trim().toLocaleLowerCase("vi-VN");
+  const groups=[...new Set(EXERCISES.map(x=>x.group))];
+  const host=$("exerciseNav"); host.innerHTML="";
+  for(const g of groups){
+    const items=EXERCISES.filter(x=>x.group===g && (!q || (x.title+" "+x.focus+" "+x.task).toLocaleLowerCase("vi-VN").includes(q)));
+    if(!items.length) continue;
+    const gt=document.createElement("div"); gt.className="group-title"; gt.textContent=g; host.appendChild(gt);
+    const list=document.createElement("div"); list.className="exercise-list";
+    for(const ex of items){
+      const b=document.createElement("button"); b.className="ex-btn"+(EXERCISES[state.index].id===ex.id?" active":"");
+      b.innerHTML=`<span>${String(ex.id).padStart(2,"0")}</span><span>${ex.title}<small>${state.done.has(ex.id)?"[OK] ":""}${ex.focus}</small></span>`;
+      b.onclick=()=>{ state.index=EXERCISES.findIndex(x=>x.id===ex.id); loadExercise(); };
+      list.appendChild(b);
+    }
+    host.appendChild(list);
+  }
+}
+function setBadge(text, pass=false){
+  const b=$("resultBadge"); b.textContent=text; b.className=pass?"pass":"fail";
+}
+function loadExercise(){
+  const ex=EXERCISES[state.index];
+  $("group").textContent=ex.group;
+  $("title").textContent=String(ex.id).padStart(2,"0")+" · "+ex.title;
+  $("task").textContent=ex.task;
+  $("focus").textContent=ex.focus;
+  $("code").value=ex.code;
+  $("expected").textContent=ex.expected || "(không có output)";
+  $("actual").textContent="C:\\> _";
+  $("runtimeInfo").textContent="IDLE";
+  $("note").innerHTML="<strong>GHI CHÚ</strong> "+ex.note;
+  $("prevBtn").disabled=state.index===0;
+  $("nextBtn").disabled=state.index===EXERCISES.length-1;
+  setBadge(state.done.has(ex.id)?"ĐÃ ĐẠT":"CHƯA CHẠY",state.done.has(ex.id));
+  updateLines();
+  renderNav($("search").value);
+}
+function updateLines(){
+  const n=$("code").value.split(/\\r?\\n/).length;
+  $("lineInfo").textContent=n+" LINES";
+}
+function normalizeOut(s){return String(s??"").replace(/\\r\\n/g,"\\n").trim();}
+function runCurrent(){
+  const ex=EXERCISES[state.index];
+  const src=$("code").value;
+  let js;
+  try{ js=transpileBila(src); }
+  catch(err){
+    $("actual").textContent="TRANSPILER ERROR: "+err.message;
+    $("runtimeInfo").textContent="ERROR"; setBadge("LỖI",false); return;
+  }
+
+  const blob=new Blob([workerSource],{type:"text/javascript"});
+  const url=URL.createObjectURL(blob);
+  const worker=new Worker(url);
+  let settled=false;
+  $("actual").textContent="C:\\> RUNNING...";
+  $("runtimeInfo").textContent="WORKER";
+
+  const timer=setTimeout(()=>{
+    if(settled) return; settled=true; worker.terminate(); URL.revokeObjectURL(url);
+    $("actual").textContent="TIMEOUT: chương trình vượt 1500 ms.";
+    $("runtimeInfo").textContent="TIMEOUT"; setBadge("TIMEOUT",false);
+  },1500);
+
+  worker.onmessage=(ev)=>{
+    if(settled) return; settled=true; clearTimeout(timer); worker.terminate(); URL.revokeObjectURL(url);
+    const r=ev.data;
+    $("actual").textContent=r.output || "(không có output)";
+    $("runtimeInfo").textContent=r.ok?"DONE":"ERROR";
+    const pass=r.ok && normalizeOut(r.output)===normalizeOut(ex.expected);
+    if(pass){
+      state.done.add(ex.id); updateDone(); setBadge("PASS · KHỚP KẾT QUẢ",true); renderNav($("search").value);
+    }else{
+      setBadge(r.ok?"RUN · CHƯA KHỚP":"RUNTIME ERROR",false);
+    }
+  };
+  worker.onerror=(err)=>{
+    if(settled) return; settled=true; clearTimeout(timer); worker.terminate(); URL.revokeObjectURL(url);
+    $("actual").textContent="WORKER ERROR: "+(err.message||"unknown");
+    $("runtimeInfo").textContent="ERROR"; setBadge("LỖI",false);
+  };
+  worker.postMessage({code:js});
+}
+
+$("runBtn").onclick=runCurrent;
+$("resetBtn").onclick=loadExercise;
+$("copyCodeBtn").onclick=()=>copyText($("code").value);
+$("copyResultBtn").onclick=()=>copyText($("actual").textContent.replace(/^C:\\\\> _$/,""));
+$("copyTxtBtn").onclick=()=>{
+  const ex=EXERCISES[state.index];
+  copyText(makeTxt(ex,$("code").value,$("actual").textContent));
+};
+$("downloadTxtBtn").onclick=()=>{
+  const ex=EXERCISES[state.index];
+  downloadText(`BilaScript_Bai_${String(ex.id).padStart(2,"0")}.txt`,makeTxt(ex,$("code").value,$("actual").textContent));
+};
+$("prevBtn").onclick=()=>{if(state.index>0){state.index--;loadExercise();}};
+$("nextBtn").onclick=()=>{if(state.index<EXERCISES.length-1){state.index++;loadExercise();}};
+$("search").addEventListener("input",e=>renderNav(e.target.value));
+$("code").addEventListener("input",()=>{updateLines();setBadge("ĐÃ SỬA · CHƯA CHẠY",false);});
+$("code").addEventListener("keydown",e=>{
+  if(e.key==="Tab"){e.preventDefault();const t=e.target,s=t.selectionStart,n=t.selectionEnd;t.value=t.value.slice(0,s)+"    "+t.value.slice(n);t.selectionStart=t.selectionEnd=s+4;updateLines();}
+  if(e.key==="F5"){e.preventDefault();runCurrent();}
+});
+updateDone();
+loadExercise();
+</script>
+</body>
+</html>

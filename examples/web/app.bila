@@ -1,0 +1,14 @@
+---bila:strict---
+
+bilb root = document.querySelector("#app");
+bilb count: Sob = 0;
+
+haml_sob render() {
+  root.innerHTML = `<h1>BilaScript Web</h1><p>Count: ${count}</p><button id="inc">+1</button>`;
+  document.querySelector("#inc").addEventListener("click", () => {
+    count++;
+    render();
+  });
+}
+
+render();

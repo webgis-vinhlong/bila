@@ -1,0 +1,57 @@
+{
+  "name": "bilascript-official-tools",
+  "displayName": "BilaScript Official Tools",
+  "description": "AST diagnostics, BilaScript-to-JS compilation, AST inspection and source-map debugging.",
+  "version": "0.1.0",
+  "publisher": "xulytiengviet",
+  "license": "MIT",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Programming Languages", "Debuggers", "Linters"],
+  "main": "./extension.cjs",
+  "activationEvents": [
+    "onLanguage:bilascript",
+    "onCommand:bilascript.compileFile",
+    "onCommand:bilascript.runFile",
+    "onCommand:bilascript.showAST",
+    "onCommand:bilascript.debugFile"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "bilascript",
+      "aliases": ["BilaScript", "bila"],
+      "extensions": [".bila"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "bilascript",
+      "scopeName": "source.bilascript",
+      "path": "./syntaxes/bilascript.tmLanguage.json"
+    }],
+    "snippets": [{
+      "language": "bilascript",
+      "path": "./snippets/bilascript.json"
+    }],
+    "commands": [
+      {"command":"bilascript.compileFile","title":"BilaScript: Compile current file"},
+      {"command":"bilascript.runFile","title":"BilaScript: Run current file"},
+      {"command":"bilascript.showAST","title":"BilaScript: Show AST"},
+      {"command":"bilascript.debugFile","title":"BilaScript: Debug current file"}
+    ],
+    "menus": {
+      "editor/title": [
+        {"command":"bilascript.compileFile","when":"resourceLangId == bilascript","group":"navigation@10"},
+        {"command":"bilascript.debugFile","when":"resourceLangId == bilascript","group":"navigation@11"}
+      ]
+    },
+    "configuration": {
+      "title": "BilaScript",
+      "properties": {
+        "bilascript.diagnostics.onType": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run AST syntax diagnostics while typing."
+        }
+      }
+    }
+  }
+}

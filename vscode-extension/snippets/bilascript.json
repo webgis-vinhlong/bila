@@ -1,0 +1,6 @@
+{
+  "Bila function": {"prefix":"bfn","body":["haml_sob ${1:ten_ham}(${2:x}: Sob): ${3:Sob} {","  trov_ved ${4:x};","}"],"description":"BilaScript function"},
+  "Bila if": {"prefix":"bif","body":["neub (${1:dieu_kien}) {","  ${2}","} kac {","  ${3}","}"],"description":"BilaScript if/else"},
+  "Bila for": {"prefix":"bfor","body":["vil (bilb ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {","  ${3}","}"],"description":"BilaScript for loop"},
+  "DOM click": {"prefix":"bclick","body":["bilb el = document.querySelector(\"${1:#button}\");","el.addEventListener(\"click\", () => {","  ${2}","});"],"description":"DOM click handler"}
+}
