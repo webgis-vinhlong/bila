@@ -1,0 +1,28 @@
+{
+  "$schema":"https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name":"BilaScript",
+  "scopeName":"source.bilascript",
+  "patterns":[
+    {"include":"#comments"},{"include":"#strings"},{"include":"#numbers"},{"include":"#keywords"},{"include":"#types"},{"include":"#aliases"}
+  ],
+  "repository":{
+    "comments":{"patterns":[
+      {"name":"comment.line.double-slash.bilascript","match":"//.*$"},
+      {"name":"comment.block.bilascript","begin":"/\\*","end":"\\*/"}
+    ]},
+    "strings":{"patterns":[
+      {"name":"string.quoted.double.bilascript","begin":"\"","end":"\"","patterns":[{"match":"\\\\.","name":"constant.character.escape.bilascript"}]},
+      {"name":"string.quoted.single.bilascript","begin":"'","end":"'","patterns":[{"match":"\\\\.","name":"constant.character.escape.bilascript"}]},
+      {"name":"string.quoted.template.bilascript","begin":"`","end":"`","patterns":[{"match":"\\\\.","name":"constant.character.escape.bilascript"}]}
+    ]},
+    "numbers":{"patterns":[{"name":"constant.numeric.bilascript","match":"\\b(?:0[xX][0-9A-Fa-f_]+|0[bB][01_]+|0[oO][0-7_]+|\\d[\\d_]*(?:\\.[\\d_]*)?(?:[eE][+-]?[\\d_]+)?)n?\\b"}]},
+    "keywords":{"patterns":[
+      {"name":"keyword.control.bilascript","match":"\\b(?:neub|kac|vil|trogp_ki|laml|zugk|tifb_tucr|trov_ved|thuv|chupr_layb|nemj|cujb_cugl)\\b"},
+      {"name":"storage.type.bilascript","match":"\\b(?:haml_sob|bilb|lopx|nhapf|xadb|tuk|moix)\\b"},
+      {"name":"constant.language.bilascript","match":"\\b(?:thatf|sai|voy_jaj_trir)\\b"},
+      {"name":"keyword.control.js.bilascript","match":"\\b(?:async|await|extends|static|as|typeof|void|delete|in|instanceof|this|let|const|of|switch|case|default)\\b"}
+    ]},
+    "types":{"patterns":[{"name":"support.type.bilascript","match":"\\b(?:Magz|Suh_vatf|Haml_sob|Wayl|Chujg|Sob|Lalf_lij)\\b"}]},
+    "aliases":{"patterns":[{"name":"support.function.bilascript","match":"\\b(?:dof_zail|dayq|layb_cujb|sapx_xepb|daoz_wush|ahj_xar|locr|cho_moig|motf_vail|takj|chujg_con|kopx|timl_civb|thay_theb|denb_chujg|goir|ap_zugr|waug_nhily|laml_tronl|cano_bacf_hai|jaj_trir_tydf_doib|trand|sanl|lys_thuak|mony_Tolj)\\b"}]}
+  }
+}

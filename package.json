@@ -1,0 +1,24 @@
+{
+  "name": "bilascript-devkit",
+  "version": "5.0.0-devkit-preview",
+  "type": "module",
+  "description": "AST-first BilaScript-to-JavaScript compiler, CLI, playground and VS Code tooling",
+  "keywords": ["bilascript", "compiler", "transpiler", "ast", "javascript"],
+  "author": "Long Ngo",
+  "homepage": "https://webgis-vinhlong.github.io/bila/",
+  "repository": { "type": "git", "url": "git+https://github.com/webgis-vinhlong/bila.git" },
+  "bugs": { "url": "https://github.com/webgis-vinhlong/bila/issues" },
+  "engines": { "node": ">=20" },
+  "bin": { "bila": "./bin/bila.mjs" },
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["bin", "src", "examples", "docs", "LICENSE", "README.md", "CHANGELOG.md"],
+  "scripts": {
+    "sync": "node scripts/sync-generated.mjs",
+    "check:sync": "node scripts/check-generated.mjs",
+    "test": "node --test test/*.test.mjs && npm run check:sync",
+    "verify": "npm run test && npm run check:example && npm run compile:web && node --check examples/web/app.js",
+    "check:example": "node bin/bila.mjs check examples/basic.bila",
+    "compile:web": "node bin/bila.mjs compile examples/web/app.bila -o examples/web/app.js"
+  },
+  "license": "MIT"
+}

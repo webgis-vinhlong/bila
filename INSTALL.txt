@@ -1,0 +1,30 @@
+BILASCRIPT DEVKIT - QUICK INSTALL
+
+1) REQUIREMENT
+   Node.js 20+ recommended.
+
+2) TEST
+   npm run verify
+
+3) COMPILE
+   node bin/bila.mjs compile examples/basic.bila -o basic.js
+
+4) RUN
+   node bin/bila.mjs run examples/basic.bila
+
+5) WEB DEMO
+   node bin/bila.mjs compile examples/web/app.bila -o examples/web/app.js
+   Open/serve examples/web/index.html
+
+   Full playground source: site/
+   Public page: https://webgis-vinhlong.github.io/bila/
+
+6) VS CODE EXTENSION
+   VS Code -> Extensions -> ... -> Install from VSIX...
+   Select dist/bilascript-official-tools-0.1.0.vsix
+
+7) VS CODE COMMANDS
+   BilaScript: Compile current file
+   BilaScript: Run current file
+   BilaScript: Show AST
+   BilaScript: Debug current file

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BilaScript DevKit — trình biên dịch AST-first, playground trực tuyến và bộ công cụ VS Code.">
+  <meta name="theme-color" content="#071b2b">
+  <title>BilaScript · AST-first language toolkit</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#playground">Skip to playground</a>
+  <header class="nav-wrap">
+    <nav class="nav shell" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="BilaScript home">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span>BilaScript <small>DEVKIT 5</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#architecture" data-i18n="navArchitecture">Kiến trúc</a>
+        <a href="#playground">Playground</a>
+        <a href="lab.html">LAB-40</a>
+        <a href="https://github.com/webgis-vinhlong/bila">GitHub</a>
+      </div>
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="vi" class="active">VI</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="zh">中文</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span><span data-i18n="preview">DEVKIT PREVIEW · MÃ NGUỒN MỞ</span></p>
+        <h1 data-i18n="heroTitle">Viết bằng BilaScript.<br><em>Chạy như JavaScript.</em></h1>
+        <p class="lead" data-i18n="heroLead">Một toolchain AST-first có thể kiểm thử: lexer Unicode, parser, code generator, Source Map v3, CLI, playground và công cụ VS Code.</p>
+        <div class="actions">
+          <a class="button primary" href="#playground" data-i18n="tryNow">Thử ngay</a>
+          <a class="button secondary" href="https://github.com/webgis-vinhlong/bila" data-i18n="viewSource">Xem mã nguồn</a>
+        </div>
+        <div class="status-row" aria-label="Project status">
+          <span><i class="dot green"></i><span data-i18n="tests">Kiểm thử 14/14</span></span>
+          <span><i class="dot blue"></i>Node.js 20+</span>
+          <span><i class="dot violet"></i>MIT</span>
+        </div>
+      </div>
+      <div class="hero-code" aria-label="BilaScript code example">
+        <div class="window-bar"><span></span><span></span><span></span><b>hello.bila</b></div>
+        <pre><code><span class="muted">---bila:strict---</span>
+
+<span class="kw">haml_sob</span> tong(a: <span class="type">Sob</span>, b: <span class="type">Sob</span>): <span class="type">Sob</span> {
+  <span class="kw">trov_ved</span> a + b;
+}
+
+<span class="kw">bilb</span> so = [1, 2];
+so.<span class="fn">dayq</span>(3);
+
+<span class="kw">vil</span> (<span class="kw">bilb</span> x <span class="kw">of</span> so) {
+  console.<span class="fn">log</span>(x);
+}</code></pre>
+        <div class="compiled"><span>✓</span><span data-i18n="compiled">Biên dịch thành JavaScript thuần</span></div>
+      </div>
+    </section>
+
+    <section class="metrics shell" aria-label="Capabilities">
+      <article><strong>AST</strong><span data-i18n="metricAst">Pipeline có cấu trúc</span></article>
+      <article><strong>V3</strong><span>Source Map</span></article>
+      <article><strong>CLI</strong><span>check · ast · compile · run</span></article>
+      <article><strong>VSIX</strong><span data-i18n="metricVsix">Công cụ VS Code</span></article>
+    </section>
+
+    <section id="architecture" class="section shell">
+      <div class="section-head">
+        <p class="eyebrow"><span></span><span data-i18n="underHood">BÊN TRONG HỆ THỐNG</span></p>
+        <h2 data-i18n="architectureTitle">Từ mã nguồn đến chương trình chạy được</h2>
+        <p data-i18n="architectureLead">Mỗi giai đoạn có đầu vào, đầu ra rõ ràng và được kiểm thử hồi quy—không phải một chuỗi thay thế từ khóa bằng regex.</p>
+      </div>
+      <div class="pipeline" role="list">
+        <article role="listitem"><b>01</b><span class="pipe-icon">⌁</span><h3>Lexer</h3><p data-i18n="lexerText">Tách token Unicode và giữ vị trí dòng/cột.</p></article>
+        <article role="listitem"><b>02</b><span class="pipe-icon">⌘</span><h3>Parser</h3><p data-i18n="parserText">Dựng AST kiểu ESTree bằng recursive descent.</p></article>
+        <article role="listitem"><b>03</b><span class="pipe-icon">{ }</span><h3>AST</h3><p data-i18n="astText">Sở hữu cấu trúc câu lệnh, biểu thức, class và module.</p></article>
+        <article role="listitem"><b>04</b><span class="pipe-icon">JS</span><h3>Codegen</h3><p data-i18n="codegenText">Sinh JavaScript và ánh xạ Source Map v3.</p></article>
+      </div>
+    </section>
+
+    <section id="playground" class="section playground-wrap">
+      <div class="shell">
+        <div class="section-head split-head">
+          <div>
+            <p class="eyebrow"><span></span><span>PLAYGROUND</span></p>
+            <h2 data-i18n="playgroundTitle">Biên dịch ngay trong trình duyệt</h2>
+          </div>
+          <div class="play-actions">
+            <label for="exampleSelect" class="sr-only">Example</label>
+            <select id="exampleSelect" aria-label="Example">
+              <option value="basic">Function + loop</option>
+              <option value="collection">Map + filter</option>
+              <option value="class">Class + try/catch</option>
+            </select>
+            <button id="compileBtn" class="button secondary" data-i18n="compile">Biên dịch</button>
+            <button id="runBtn" class="button primary" data-i18n="run">Chạy ▶</button>
+          </div>
+        </div>
+
+        <div class="ide" aria-label="BilaScript playground">
+          <section class="pane editor-pane">
+            <div class="pane-title"><span>BILASCRIPT</span><span id="sourceMeta">0 lines</span></div>
+            <textarea id="source" spellcheck="false" aria-label="BilaScript source code"></textarea>
+          </section>
+          <section class="pane output-pane">
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-panel="jsPanel" role="tab">JAVASCRIPT</button>
+              <button class="tab" data-panel="astPanel" role="tab">AST</button>
+              <button class="tab" data-panel="diagPanel" role="tab">DIAGNOSTICS <span id="diagCount">0</span></button>
+            </div>
+            <pre id="jsPanel" class="panel active" tabindex="0"><code id="jsOutput"></code></pre>
+            <pre id="astPanel" class="panel" tabindex="0"><code id="astOutput"></code></pre>
+            <div id="diagPanel" class="panel diagnostics" tabindex="0"></div>
+          </section>
+          <section class="console-pane">
+            <div class="pane-title"><span>CONSOLE</span><button id="clearBtn" data-i18n="clear">Xóa</button></div>
+            <pre id="consoleOutput" aria-live="polite"><span class="console-muted">› Ready. Compile or run the program.</span></pre>
+          </section>
+          <footer class="ide-status"><span><i class="dot green"></i><span id="compilerStatus">BilaScript 5.0.0-devkit-preview</span></span><span id="compileTime">— ms</span></footer>
+        </div>
+        <p class="safety-note" data-i18n="safetyNote">Mã chạy trong Web Worker ngắn hạn và bị dừng sau 2 giây. Đây không phải sandbox bảo mật cho mã không tin cậy.</p>
+      </div>
+    </section>
+
+    <section class="section shell tools">
+      <div class="section-head">
+        <p class="eyebrow"><span></span><span data-i18n="tooling">BỘ CÔNG CỤ</span></p>
+        <h2 data-i18n="toolsTitle">Từ học tập đến workflow lập trình</h2>
+      </div>
+      <div class="cards">
+        <article><span class="card-icon">⌨</span><h3>CLI</h3><p data-i18n="cliText">Kiểm tra, xem AST, biên dịch và chạy tệp .bila bằng Node.js.</p><code>node bin/bila.mjs --help</code></article>
+        <article><span class="card-icon">◫</span><h3>VS Code Tools</h3><p data-i18n="vscodeText">Tô màu, snippets, diagnostics, compile, run và debug với source map.</p><a href="downloads/bilascript-official-tools-0.1.0.vsix" data-i18n="downloadVsix">Tải VSIX ↓</a></article>
+        <article><span class="card-icon">40</span><h3>LAB-40</h3><p data-i18n="labText">Bốn mươi bài thực hành offline, từ biến và vòng lặp đến phương trình.</p><a href="lab.html" data-i18n="openLab">Mở phòng lab →</a></article>
+      </div>
+    </section>
+
+    <section class="scope shell">
+      <div><span>PREVIEW</span><h2 data-i18n="honestTitle">Tuyên bố kỹ thuật trung thực</h2></div>
+      <p data-i18n="honestText">DevKit hỗ trợ một tập con thực dụng cho ứng dụng Web/Node cơ bản. Chưa tuyên bố JSX, decorators, private fields, toàn bộ TypeScript hay ECMAScript/Test262 đầy đủ.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <div class="brand"><span class="brand-mark">B</span><span>BilaScript <small>OPEN TOOLCHAIN</small></span></div>
+      <p>MIT License · © 2026 Long Ngo</p>
+      <div><a href="https://github.com/webgis-vinhlong/bila">GitHub</a><a href="https://github.com/webgis-vinhlong/bila/blob/main/SECURITY.md">Security</a></div>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+.bilascript-run/
+.bilascript-debug/
+coverage/
+build.*/
+*.log
+.DS_Store

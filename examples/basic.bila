@@ -1,0 +1,14 @@
+---bila:strict---
+haml_sob tong(a: Sob, b: Sob): Sob {
+  trov_ved a + b;
+}
+
+bilb ds: Magz<Sob> = [10, 20, 30];
+ds.dayq(40);
+
+vil (bilb i = 0; i < ds.dof_zail; i++) {
+  neub (ds[i] > 20) {
+    console.log(ds[i]);
+  }
+}
+console.log(tong(2, 3));
